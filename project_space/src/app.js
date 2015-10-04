@@ -11,7 +11,6 @@ var Vector2 = require('vector2');
 var ajax = require('ajax');
 
 // All variables \\
-var issLoc;
 var crew;
 var num;
 var mylat;
@@ -117,9 +116,29 @@ function getNextPass ()
 
 /* Wheather */
 
-//ajax
+function getAmb(){
+  var URL = 'http://api.openweathermap.org/data/2.5/weather?lat='+mylat+'&lon='+ mylon+ '&cnt=1';
+    ajax({
+        url: URL,
+        type: 'json'
+    },
+    function(data) {
+  // Success!
+  console.log('Successfully fetched weather data!');
+  // Extract data
+  var temperature = Math.round(data.main.temp * 9/5 - 459.67) + ' F';
+  var pressure = data.main.pressure + " hPa";
+  var humidity = data.main.humidity + "%";     
+        Pebble.showSimpleNotificationOnPebble("Ambient: ", "Temperature: \n" + temperature + "\n\nPressure: \n" + pressure + "\n\nHumidity: \n" + humidity);
+},
+  function(error) {
+    // Failure!
+    console.log('Failed fetching weather data: ' + error);
+  }
+);
+}
 
-function getWeather(){
+function getSky(){
   var URL = 'http://api.openweathermap.org/data/2.5/weather?lat='+mylat+'&lon='+ mylon+ '&cnt=1';
     ajax({
         url: URL,
@@ -130,12 +149,11 @@ function getWeather(){
   console.log('Successfully fetched weather data!');
 
   // Extract data
-  var location = data.name;
-  var temperature = Math.round(data.main.temp - 273.15) + 'C';
-
-  // Always upper-case first letter of description
+  var sky = data.clouds.all + "% cloudy";
   var description = data.weather[0].description;
-  description = description.charAt(0).toUpperCase() + description.substring(1);
+  var windspeed = data.wind.speed + ' m/s';
+  
+        Pebble.showSimpleNotificationOnPebble("Sky conditions: ", "Description: \n"+description+"\n\nSky: \n"+sky+"\n\nWindspeed: \n"+windspeed);
 },
   function(error) {
     // Failure!
@@ -144,29 +162,34 @@ function getWeather(){
 );
 }
 
+function getGeo(){
+  var URL = 'http://api.openweathermap.org/data/2.5/weather?lat='+mylat+'&lon='+ mylon+ '&cnt=1';
+    ajax({
+        url: URL,
+        type: 'json'
+    },
+    function(data) {
+  // Success!
+  console.log('Successfully fetched weather data!');
 
-// 
-/* JSON
-function weather(){
-  var req = new XMLHttpRequest();
-    req.open('GET', 'http://api.openweathermap.org/data/2.1/find/city?lat='+mylat+'&lon='+ mylon+ '&cnt=1', true);
-    req.onload = function(e) {
-      if (req.readyState == 4 && req.status == 200) {
-        if(req.status == 200) {
-          var response = JSON.parse(req.responseText);
-          var temperature = response.list[0].main.temp;
-          var icon = response.list[0].main.icon;
-          Pebble.sendAppMessage({ 'icon':icon, 'temperature':temperature + '\u00B0C'});
-        } else { console.log('Error'); }
-      }
-    };
-    req.send(null);
+  // Extract data
+  var city = data.name + " city";
+  var country = data.sys.country;
+        function timeConverter(UNIX_timestamp){
+             var a = new Date(UNIX_timestamp*1000);
+             var time = a.toLocaleTimeString();
+             return time;
+         }  
+  var sunrise = timeConverter(data.sys.sunrise);
+  var sunset = timeConverter(data.sys.sunset);
+        Pebble.showSimpleNotificationOnPebble("Geolocation: ", city + "\n\nCountry: \n" + country + "\n\nSunrise time: \n"+sunrise+ "\n\nSunset time: \n"+sunset);
+},
+  function(error) {
+    // Failure!
+    console.log('Failed fetching weather data: ' + error);
+  }
+);
 }
-*/
-
-
-
-
 
 /* Predict SKY*/
 
@@ -230,40 +253,10 @@ navigator.geolocation.getCurrentPosition(locationSuccess, locationError, {maximu
 console.log('No geolocation');
 }
     
-// Google maps???
-/*
-function geoFindMe() {
-  var output = document.getElementById("out");
-
-  if (!navigator.geolocation){
-    output.innerHTML = "<p>Geolocation is not supported by your browser</p>";
-    return;
-  }
-    
-  function success(position) {
-    var latitude  = position.coords.latitude;
-    var longitude = position.coords.longitude;
-
-    output.innerHTML = '<p>Latitude is ' + latitude + '° <br>Longitude is ' + longitude + '°</p>';
-
-    // var img = new Image();
-    // img.src = "https://maps.googleapis.com/maps/api/staticmap?center=" + latitude + "," + longitude + "&zoom=13&size=300x300&sensor=false";
-
-    // output.appendChild(img);
-  };
-
-  function error() {
-    output.innerHTML = "Unable to retrieve your location";
-  };
-
-  navigator.geolocation.getCurrentPosition(success, error);
-}
-*/
 
 
 
-
-
+// Local storage
 
 var key = 5;
 var value = 'Some string';
@@ -407,7 +400,7 @@ whatsup.on('select', function(event) {
 if (num === 'ISS') {
     iss.show();
   } else if (num === 'Weather') {
-	getWeather();  
+	weather.show();  
   } else if (num === 'Predict the sky') {
 	predict.show();
   } else if (num === 'My location') {
@@ -427,7 +420,20 @@ iss.on('select', function(event) {
         getISSLocation();
       } else if (num === 'Next pass') {
         getNextPass();
-           console.log('clock', getTime());
-          // if (getNextPass() === time)
       } 
     });
+
+// When wheater is selected from menu
+weather.on('select', function(event) {
+ var num = wmi[event.itemIndex].title;
+	console.log("title " + num);
+    
+    if (num === 'Ambient') {
+        getAmb();
+      } else if (num === 'Sky') {
+        getSky();
+      } else if (num === 'Geographical') {
+        getGeo();
+      } 
+    });
+
