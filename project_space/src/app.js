@@ -6,13 +6,10 @@
  * 
  */
 
-
-
 var UI = require('ui');
 var Vector2 = require('vector2');
 var ajax = require('ajax');
 
-<<<<<<< HEAD
 
 // All variables \\
 var issLoc;
@@ -32,12 +29,6 @@ var myalt;
 // Getting ISS Location
 function getISSLocation ()
 {
-=======
-function getISSLocation ()
-{
-    //var ajax = require('ajax');
-
->>>>>>> 7c505cae60b4a28aca98b6a52a33ade7d900a9ff
     var URL = 'http://api.open-notify.org/iss-now.json';
 
     // Make the request
@@ -46,21 +37,14 @@ function getISSLocation ()
         type: 'json'
     },
 
-<<<<<<< HEAD
          
     function (data) {
         // Success!
         console.log('Successfully fetched weather data!');
-=======
-    function (data) {
-        // Success!
-        //console.log('Successfully fetched weather data!');
->>>>>>> 7c505cae60b4a28aca98b6a52a33ade7d900a9ff
         var lat = data.iss_position.latitude;
         var longt = data.iss_position.longitude;
 
         console.log("lat " + lat + " lon " + longt);
-<<<<<<< HEAD
         Pebble.showSimpleNotificationOnPebble("Coords: ", "Latitude: " + lat.toFixed(2) +"\n"+ "Longitude: " + longt.toFixed(2));
     },
 
@@ -91,14 +75,11 @@ function getISSCrew (){
             console.log("crew member " +  i + 1 + ": " + data.people[i].name);
             crew[i] = data.people[i].name;
         }
-=======
->>>>>>> 7c505cae60b4a28aca98b6a52a33ade7d900a9ff
     },
 
     function (error) {
         //show error card!
         // Failure!
-<<<<<<< HEAD
         console.log('Failed to connect to ISS API: ' + error);
     });
     for(var i = 0; i < num; i++) {
@@ -188,14 +169,6 @@ console.log('Pebble Watch Token: ' + Pebble.getWatchToken());
 
 
 
-=======
-        //console.log('Failed fetching weather data: ' + error);
-    });
-  
-   return data;
-};
-
->>>>>>> 7c505cae60b4a28aca98b6a52a33ade7d900a9ff
 
 // Main UI card
 var main = new UI.Card({
@@ -311,30 +284,12 @@ whatsup.on('select', function(event) {
  var num = sel[event.itemIndex].title;
 	console.log("title " + num);
 	
-  if (num === 'ISS') {
-      iss.show();
-    } else if (num === 'Meteor') {
-  	meteor.show();  
-    } else if (num === 'Predict the sky') {
-  	predict.show();
-    }	
- 
-});
-
-var issLoc;
-// When ISS is selected from menu
-iss.on('select', function(event) {
- var num = imi[event.itemIndex].title;
-	console.log("title " + num);
-	
-if (num === "Where is it?") {
-  issLoc = getISSLocation();
-  console.log("ISS Log: " + issLoc);
-  } /*else if (num === 'Where is it?') {
+if (num === 'ISS') {
+    iss.show();
+  } else if (num === 'Meteor') {
 	meteor.show();  
-  } else if (num === 'Other') {
+  } else if (num === 'Predict the sky') {
 	predict.show();
-<<<<<<< HEAD
   } else if (num === 'My location') {
       Pebble.showSimpleNotificationOnPebble('My coords: ', 'Latitude: \n' + mylat + '\nLongitude: \n' + mylon + '\nAltitude: \n' + myalt);
   }	
@@ -355,8 +310,3 @@ iss.on('select', function(event) {
         console.log('lat= ' + mylat + ' lon= ' + mylon + ' alt= ' + myalt );
       } 
     });
-=======
-  } */
- 
-});
->>>>>>> 7c505cae60b4a28aca98b6a52a33ade7d900a9ff
