@@ -6,8 +6,6 @@
  * 
  */
 
-// Var 
-
 var UI = require('ui');
 var Vector2 = require('vector2');
 
@@ -29,10 +27,12 @@ var img = new UI.Image({
 banner.add(img);
 
 // Main menu
+var sel = [{title: 'ISS'}, {title: 'Meteor'}, {title: 'Predict the sky'}];
 var whatsup = new UI.Menu({
-	sections: [{
-		items: [{title: 'ISS'}, {title: 'Meteor'}, {title: 'Predict the sky'}]
-	}] 
+	sections: [{ 
+		title: 'What to see?',
+		items: sel
+	}]
 });
 
 // ISS sub-menu
@@ -136,13 +136,15 @@ main.on('click', 'down', function(e) {
 });
 
 whatsup.on('select', function(event) {
-
-  // Show a card with clicked item details
-  var detailCard = new UI.Card({
-    title: whatsup[event.itemIndex].title,
-    body: whatsup[event.itemIndex].subtitle
-  });
-
-  // Show the new Card
-  detailCard.show();
+ var num = sel[event.itemIndex].title;
+	console.log("title " + num);
+	
+if (num === 'ISS') {
+    iss.show();
+  } else if (num === 'Meteor') {
+	meteor.show();  
+  } else if (num === 'Predict the sky') {
+	predict.show();
+  }	
+ 
 });
