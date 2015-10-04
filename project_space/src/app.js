@@ -282,8 +282,10 @@ var locationError = function (err) {
 console.warn('location error (' + err.code + '): ' + err.message);
 };
 
+var options = {timeout:30000, enableHighAccuracy:true, maximumAge: 90000};
+
 if (navigator && navigator.geolocation) {
-navigator.geolocation.getCurrentPosition(locationSuccess, locationError, {maximumAge:60000, timeout:5000, enableHighAccuracy:true});
+navigator.geolocation.getCurrentPosition(locationSuccess, locationError, options);
 } else {
 console.log('No geolocation');
 }
