@@ -37,8 +37,19 @@ function getAddress (lat, lon) {
     },
 
     function showResults(data) {
+      console.log (typeof(data));
+      //var response = JSON.stringify(data);
+      //console.log("stringified JSON = " + response);
+      var repl = data.replace('renderReverse(', '');
+      console.log("truncated string = " + repl);
+      var str = repl.substring(0, repl.length -2);
+      console.log("truncated string 2 = " + str);
+      var response = str;
+      console.log("JSONified string = " + response);
+      
       //var msg = '';
-      address = data.renderReverse.results[1].locations[0].street + ", " + data.renderReverse.results[1].locations[0].adminArea4 + ", " + data.renderReverse.results[1].locations[0].adminArea3 + ", " + data.renderReverse.results[1].locations[0].adminArea1 + ", " + data.renderReverse.results[1].locations[0].postalCode;
+      address = response.results[0].locations[0].street + ", " + response.results[0].locations[0].adminArea4 + ", " + response.results[0].locations[0].adminArea3 + ", " + response.results[0].locations[0].adminArea1 + ", " + response.results[0].locations[0].postalCode;
+      console.log("address = " + address);
     });
 }
 
