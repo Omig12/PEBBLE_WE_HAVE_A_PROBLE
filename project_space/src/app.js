@@ -10,7 +10,6 @@ var UI = require('ui');
 var Vector2 = require('vector2');
 var ajax = require('ajax');
 
-
 // All variables \\
 var issLoc;
 var crew;
@@ -87,6 +86,129 @@ function getISSCrew (){
     }
 }
 
+// Getting ISS Location
+function getNextPass ()
+{
+    var URL = 'http://api.open-notify.org/iss-pass.json?lat='+ mylat + '&lon=' + mylon + '&alt=' + myalt + '&n=1';
+
+    // Make the request
+    ajax({
+        url: URL,
+        type: 'json'
+    },
+
+         
+    function (data) {
+        // Success!
+        console.log('Successfully fetched next pass data!');
+        function timeConverter(UNIX_timestamp){
+             var a = new Date(UNIX_timestamp*1000);
+             var time = a.toLocaleString();
+             return time;
+         }
+        
+        var rt = timeConverter(data.response[0].risetime);
+        var d = data.response[0].duration;
+
+        console.log("rt " + rt + " d " + d);
+        Pebble.showSimpleNotificationOnPebble("Next Pass: ", "Risetime: \n" + rt +"\n\n"+ "Duration: \n" + d );
+    },
+
+    function (error) {
+        //show error card!
+        // Failure!
+        console.log('Failed fetching Next Pass data: ' + error);
+    });
+}
+
+
+
+/* Metiorites */
+
+
+// 
+
+function fireball ()
+{
+    var URL = 'https://data.nasa.gov/resource/mc52-syum.json';
+
+    // Make the request
+    ajax({
+        url: URL,
+        type: 'json'
+    },
+
+         
+    function (data) {
+        // Success!
+        console.log('Successfully fetched fireball data!');
+        function timeConverter(UNIX_timestamp){
+             var a = new Date(UNIX_timestamp*1000);
+             var time = a.toLocaleString();
+             return time;
+         }
+        
+        var rt = timeConverter(data.response[0].risetime);
+        var d = data.response[0].duration;
+
+        console.log("rt " + rt + " d " + d);
+        Pebble.showSimpleNotificationOnPebble("Next Pass: ", "Risetime: \n" + rt +"\n\n"+ "Duration: \n" + d );
+    },
+
+    function (error) {
+        //show error card!
+        // Failure!
+        console.log('Failed fetching fireball data: ' + error);
+    });
+}
+
+
+
+
+
+
+/* Predict SKY*/
+
+
+function skyes ()
+{
+    var URL = 'http://api.predictthesky.org';
+
+    // Make the request
+    ajax({
+        url: URL,
+        type: 'json'
+    },
+
+         
+    function (data) {
+        // Success!
+        console.log('Successfully fetched fireball data!');
+        function timeConverter(UNIX_timestamp){
+             var a = new Date(UNIX_timestamp*1000);
+             var time = a.toLocaleString();
+             return time;
+         }
+        
+        var rt = timeConverter(data.response[0].risetime);
+        var d = data.response[0].duration;
+
+        console.log("rt " + rt + " d " + d);
+        Pebble.showSimpleNotificationOnPebble("Next Pass: ", "Risetime: \n" + rt +"\n\n"+ "Duration: \n" + d );
+    },
+
+    function (error) {
+        //show error card!
+        // Failure!
+        console.log('Failed fetching fireball data: ' + error);
+    });
+}
+
+
+
+
+/* GEOLOCATION */
+
 // GET Position
 var locationSuccess = function (pos) {
 var coordinates = pos.coords;
@@ -136,6 +258,11 @@ function geoFindMe() {
   navigator.geolocation.getCurrentPosition(success, error);
 }
 */
+
+
+
+
+
 
 var key = 5;
 var value = 'Some string';
@@ -197,7 +324,7 @@ var whatsup = new UI.Menu({
 });
 
 // ISS sub-menu
-var imi = [{title:"Who's up?"}, {title:'Where is it?'}, {title:'Next pass'}]; // ISS Menu Items
+var imi = [{title:"Who's up there?"}, {title:'Where is it?'}, {title:'Next pass'}]; // ISS Menu Items
 var iss = new UI.Menu ({
 	sections: [{
 		title: 'ISS:', 
@@ -260,6 +387,12 @@ req.send(null);
 */
 
 
+
+
+
+
+
+
 // Function Implementations
 
 // Display main
@@ -301,12 +434,13 @@ iss.on('select', function(event) {
  var num = imi[event.itemIndex].title;
 	console.log("title " + num);
     
-    if (num === "Who's up?") {
+    if (num === "Who's up there?") {
         getISSCrew();
       } else if (num === "Where is it?") {
       issLoc = getISSLocation();
-      console.log("ISS Log: " + issLoc);
       } else if (num === 'Next pass') {
-        console.log('lat= ' + mylat + ' lon= ' + mylon + ' alt= ' + myalt );
+          getNextPass();
+           console.log('clock', getTime());
+          // if (getNextPass() === time)
       } 
     });
