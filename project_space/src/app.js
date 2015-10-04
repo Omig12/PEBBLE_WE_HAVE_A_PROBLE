@@ -23,6 +23,10 @@ var myalt;
 
 /* Next */
 
+function isLatPos(x) {if (x>0) return x + " N"; else if(x < 0) return Math.abs(x) + " S";}
+
+function isLonPos(y) {if (y>0) return y + " E"; else if(y < 0) return Math.abs(y) + " W";}
+                      
 // API functions \\
 // Getting ISS Location
 function getISSLocation ()
@@ -38,18 +42,18 @@ function getISSLocation ()
          
     function (data) {
         // Success!
-        console.log('Successfully fetched weather data!');
+        console.log('Successfully Iss location data!');
         var lat = data.iss_position.latitude;
         var longt = data.iss_position.longitude;
 
         console.log("lat " + lat + " lon " + longt);
-        Pebble.showSimpleNotificationOnPebble("Coords: ", "Latitude: " + lat.toFixed(2) +"\n"+ "Longitude: " + longt.toFixed(2));
+        Pebble.showSimpleNotificationOnPebble("Coords: ", "Latitude: \n" + isLatPos(lat.toFixed(2)) +"\n\nLongitude: \n" + isLonPos(longt.toFixed(2)));
     },
 
     function (error) {
         //show error card!
         // Failure!
-        console.log('Failed fetching weather data: ' + error);
+        console.log('Failed fetching ISS location data: ' + error);
     });
 }
 
@@ -103,9 +107,9 @@ function getNextPass ()
              return time;
          }  
         var rt = timeConverter(data.response[0].risetime);
-        var d = data.response[0].duration;
+        var d = data.response[0].duration + " s";
         console.log("rt " + rt + " d " + d);
-        Pebble.showSimpleNotificationOnPebble("Next Pass: ", "Risetime: \n" + rt +"\n\n"+ "Duration: \n" + d );
+        Pebble.showSimpleNotificationOnPebble("Next Pass: ", " ISS Risetime: \n" + rt +"\n\n"+ "Duration: \n" + d );
     },
     function (error) {
         //show error card!
@@ -194,7 +198,7 @@ function getGeo(){
 /* Predict SKY*/
 
 
-function skyes ()
+function Predict ()
 {
     var URL = 'http://api.predictthesky.org';
 
@@ -336,38 +340,13 @@ var weather = new UI.Menu ({
 });
 
 // Predict sub-menu
-var pmi = [{title:'ISS'}, {title:'Meteors'}, {title:'Predict the sky'}]; // Predict Menu Items
+var pmi = [{title:'Satellites'}, {title:'Meteors'}, {title:'Comets'}, {title:'Planets'}]; // Predict Menu Items
 var predict = new UI.Menu({
 	sections: [{
 		title: 'Predict the sky:', 
 		items: pmi
 	}] 
 });
-
-
-// Crew Card
-/*
-// Crew Window
-var crew = UI.Window({fullscreen: true});
-var CrewText = new UI.Text({
-    position: new Vector2(0, 0),
-    size: new Vector2(144, 168),
-    title: for (int i =0; i < data.number) data.people[i].name
-});
-window.add(CrewText);
-*/
-
-// MyLoc Card
-/*
-var myloc = new UI.Card({ 
-    
-});
-*/
-
-
-
-
-
 
 
 
@@ -404,7 +383,7 @@ if (num === 'ISS') {
   } else if (num === 'Predict the sky') {
 	predict.show();
   } else if (num === 'My location') {
-      Pebble.showSimpleNotificationOnPebble('My coords: ', 'Latitude: \n' + mylat + '\nLongitude: \n' + mylon + '\nAltitude: \n' + myalt);
+      Pebble.showSimpleNotificationOnPebble('My coords: ', 'Latitude: \n' + isLatPos(mylat) + '\n\nLongitude: \n' + isLonPos(mylon) + '\n\nAltitude: \n' + myalt + " m");
   }	
  
 });

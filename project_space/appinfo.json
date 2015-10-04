@@ -29,14 +29,14 @@
                 "type": "font"
             },
             {
-                "file": "images/promo.png",
-                "name": "IMAGES_PROMO_PNG",
-                "type": "png"
-            },
-            {
                 "file": "images/logo.png",
                 "menuIcon": true,
                 "name": "IMAGES_LOGO_PNG",
+                "type": "png"
+            },
+            {
+                "file": "images/promo.png",
+                "name": "IMAGES_PROMO_PNG",
                 "type": "png"
             }
         ]
