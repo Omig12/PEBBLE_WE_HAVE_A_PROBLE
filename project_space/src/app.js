@@ -16,12 +16,31 @@ var num;
 var mylat;
 var mylon;
 var myalt;
+var address;
 
 // End vars \\
 
 
 
 /* Next */
+
+function getAddress (lat, lon) {
+    var reverseGeocodeUrl = 'http://open.mapquestapi.com/geocoding/v1/reverse?key=B2aDTEavA2fYCbIMZuRgxgj4KjcWJvQW&callback=renderReverse&json={location:{latLng:{lat:' + lat + ',lng:' + lon + '}}}';
+    ajax({
+      url: reverseGeocodeUrl,
+      type: 'json'
+    },
+  
+    function errCatch(error) {
+      console.log('');
+      Pebble.showSimpleNotificationOnPebble("Could not find a nearby physical address");
+    },
+
+    function showResults(data) {
+      //var msg = '';
+      address = data.renderReverse.results[1].locations[0].street + ", " + data.renderReverse.results[1].locations[0].adminArea4 + ", " + data.renderReverse.results[1].locations[0].adminArea3 + ", " + data.renderReverse.results[1].locations[0].adminArea1 + ", " + data.renderReverse.results[1].locations[0].postalCode;
+    });
+}
 
 function isLatPos(x) {if (x>0) return x + " N"; else if(x < 0) return Math.abs(x) + " S";}
 
@@ -45,9 +64,10 @@ function getISSLocation ()
         console.log('Successfully Iss location data!');
         var lat = data.iss_position.latitude;
         var longt = data.iss_position.longitude;
+        var addr = getAddress(lat, longt);
 
-        console.log("lat " + lat + " lon " + longt);
-        Pebble.showSimpleNotificationOnPebble("Coords: ", "Latitude: \n" + isLatPos(lat.toFixed(2)) +"\n\nLongitude: \n" + isLonPos(longt.toFixed(2)));
+        console.log("lat " + lat + " lon " + longt + "addr " + addr);
+        Pebble.showSimpleNotificationOnPebble("Coords: ", "Latitude: \n" + isLatPos(lat.toFixed(2)) +"\n\nLongitude: \n" + isLonPos(longt.toFixed(2)) + "\n\nPhysical Address: " + addr);
     },
 
     function (error) {
