@@ -6,8 +6,42 @@
  * 
  */
 
+
+
 var UI = require('ui');
 var Vector2 = require('vector2');
+var ajax = require('ajax');
+
+function getISSLocation ()
+{
+    //var ajax = require('ajax');
+
+    var URL = 'http://api.open-notify.org/iss-now.json';
+
+    // Make the request
+    ajax({
+        url: URL,
+        type: 'json'
+    },
+
+    function (data) {
+        // Success!
+        //console.log('Successfully fetched weather data!');
+        var lat = data.iss_position.latitude;
+        var longt = data.iss_position.longitude;
+
+        console.log("lat " + lat + " lon " + longt);
+    },
+
+    function (error) {
+        //show error card!
+        // Failure!
+        //console.log('Failed fetching weather data: ' + error);
+    });
+  
+   return data;
+};
+
 
 // Main UI card
 var main = new UI.Card({
@@ -139,12 +173,29 @@ whatsup.on('select', function(event) {
  var num = sel[event.itemIndex].title;
 	console.log("title " + num);
 	
-if (num === 'ISS') {
-    iss.show();
-  } else if (num === 'Meteor') {
+  if (num === 'ISS') {
+      iss.show();
+    } else if (num === 'Meteor') {
+  	meteor.show();  
+    } else if (num === 'Predict the sky') {
+  	predict.show();
+    }	
+ 
+});
+
+var issLoc;
+// When ISS is selected from menu
+iss.on('select', function(event) {
+ var num = imi[event.itemIndex].title;
+	console.log("title " + num);
+	
+if (num === "Where is it?") {
+  issLoc = getISSLocation();
+  console.log("ISS Log: " + issLoc);
+  } /*else if (num === 'Where is it?') {
 	meteor.show();  
-  } else if (num === 'Predict the sky') {
+  } else if (num === 'Other') {
 	predict.show();
-  }	
+  } */
  
 });
