@@ -90,14 +90,11 @@ function getISSCrew (){
 function getNextPass ()
 {
     var URL = 'http://api.open-notify.org/iss-pass.json?lat='+ mylat + '&lon=' + mylon + '&alt=' + myalt + '&n=1';
-
     // Make the request
     ajax({
         url: URL,
         type: 'json'
     },
-
-         
     function (data) {
         // Success!
         console.log('Successfully fetched next pass data!');
@@ -105,15 +102,12 @@ function getNextPass ()
              var a = new Date(UNIX_timestamp*1000);
              var time = a.toLocaleString();
              return time;
-         }
-        
+         }  
         var rt = timeConverter(data.response[0].risetime);
         var d = data.response[0].duration;
-
         console.log("rt " + rt + " d " + d);
         Pebble.showSimpleNotificationOnPebble("Next Pass: ", "Risetime: \n" + rt +"\n\n"+ "Duration: \n" + d );
     },
-
     function (error) {
         //show error card!
         // Failure!
@@ -121,47 +115,54 @@ function getNextPass ()
     });
 }
 
+/* Wheather */
 
+//ajax
 
-/* Metiorites */
-
-
-// 
-
-function fireball ()
-{
-    var URL = 'https://data.nasa.gov/resource/mc52-syum.json';
-
-    // Make the request
+function getWeather(){
+  var URL = 'http://api.openweathermap.org/data/2.5/weather?lat='+mylat+'&lon='+ mylon+ '&cnt=1';
     ajax({
         url: URL,
         type: 'json'
     },
+    function(data) {
+  // Success!
+  console.log('Successfully fetched weather data!');
 
-         
-    function (data) {
-        // Success!
-        console.log('Successfully fetched fireball data!');
-        function timeConverter(UNIX_timestamp){
-             var a = new Date(UNIX_timestamp*1000);
-             var time = a.toLocaleString();
-             return time;
-         }
-        
-        var rt = timeConverter(data.response[0].risetime);
-        var d = data.response[0].duration;
+  // Extract data
+  var location = data.name;
+  var temperature = Math.round(data.main.temp - 273.15) + 'C';
 
-        console.log("rt " + rt + " d " + d);
-        Pebble.showSimpleNotificationOnPebble("Next Pass: ", "Risetime: \n" + rt +"\n\n"+ "Duration: \n" + d );
-    },
-
-    function (error) {
-        //show error card!
-        // Failure!
-        console.log('Failed fetching fireball data: ' + error);
-    });
+  // Always upper-case first letter of description
+  var description = data.weather[0].description;
+  description = description.charAt(0).toUpperCase() + description.substring(1);
+},
+  function(error) {
+    // Failure!
+    console.log('Failed fetching weather data: ' + error);
+  }
+);
 }
 
+
+// 
+/* JSON
+function weather(){
+  var req = new XMLHttpRequest();
+    req.open('GET', 'http://api.openweathermap.org/data/2.1/find/city?lat='+mylat+'&lon='+ mylon+ '&cnt=1', true);
+    req.onload = function(e) {
+      if (req.readyState == 4 && req.status == 200) {
+        if(req.status == 200) {
+          var response = JSON.parse(req.responseText);
+          var temperature = response.list[0].main.temp;
+          var icon = response.list[0].main.icon;
+          Pebble.sendAppMessage({ 'icon':icon, 'temperature':temperature + '\u00B0C'});
+        } else { console.log('Error'); }
+      }
+    };
+    req.send(null);
+}
+*/
 
 
 
@@ -177,7 +178,7 @@ function skyes ()
     // Make the request
     ajax({
         url: URL,
-        type: 'json'
+        type: 'application/json'
     },
 
          
@@ -315,7 +316,7 @@ var img = new UI.Image({
 banner.add(img);
 
 // Main menu
-var sel = [{title: 'ISS'}, {title: 'Meteor'}, {title: 'Predict the sky'}, {title: 'My location'}];
+var sel = [{title: 'ISS'}, {title: 'Weather'}, {title: 'Predict the sky'}, {title: 'My location'}];
 var whatsup = new UI.Menu({
 	sections: [{ 
 		title: 'What to see?',
@@ -332,12 +333,12 @@ var iss = new UI.Menu ({
 	}] 
 });
 
-// Meteors sub-menu
-var mmi= [{title:"Who's up?"}, {title:'Where is it?'}, {title:'Other'}]; // Meteors Menu Items
-var meteor = new UI.Menu ({
+// Weather sub-menu
+var wmi= [{title:'Ambient'}, {title:'Sky'}, {title:'Geographical'}]; // Wheather Menu Items
+var weather = new UI.Menu ({
 	sections: [{
-		title: 'Meteors:',
-		items: mmi
+		title: 'Wheather:',
+		items: wmi
 	}] 
 });
 
@@ -370,21 +371,7 @@ var myloc = new UI.Card({
 });
 */
 
-//  wheather maybe????
-/*var req = new XMLHttpRequest();
-req.open('GET', 'http://api.openweathermap.org/data/2.1/find/city?lat=37.830310&lon=-122.270831&cnt=1', true);
-req.onload = function(e) {
-  if (req.readyState == 4 && req.status == 200) {
-    if(req.status == 200) {
-      var response = JSON.parse(req.responseText);
-      var temperature = response.list[0].main.temp;
-      var icon = response.list[0].main.icon;
-      Pebble.sendAppMessage({ 'icon':icon, 'temperature':temperature + '\u00B0C'});
-    } else { console.log('Error'); }
-  }
-};
-req.send(null);
-*/
+
 
 
 
@@ -419,8 +406,8 @@ whatsup.on('select', function(event) {
 	
 if (num === 'ISS') {
     iss.show();
-  } else if (num === 'Meteor') {
-	meteor.show();  
+  } else if (num === 'Weather') {
+	getWeather();  
   } else if (num === 'Predict the sky') {
 	predict.show();
   } else if (num === 'My location') {
@@ -437,9 +424,9 @@ iss.on('select', function(event) {
     if (num === "Who's up there?") {
         getISSCrew();
       } else if (num === "Where is it?") {
-      issLoc = getISSLocation();
+        getISSLocation();
       } else if (num === 'Next pass') {
-          getNextPass();
+        getNextPass();
            console.log('clock', getTime());
           // if (getNextPass() === time)
       } 
