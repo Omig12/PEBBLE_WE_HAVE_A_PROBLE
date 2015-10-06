@@ -85,7 +85,7 @@ function getISSCrew (){
         console.log('Failed to connect to ISS API: ' + error);
     });
     for(var i = 0; i < num; i++) {
-        Pebble.showSimpleNotificationOnPebble("crew: ", crew[i]);
+        Pebble.showSimpleNotificationOnPebble("Crew: ", crew[i]);
     }
 }
 
@@ -109,7 +109,7 @@ function getNextPass ()
         var rt = timeConverter(data.response[0].risetime);
         var d = data.response[0].duration + " s";
         console.log("rt " + rt + " d " + d);
-        Pebble.showSimpleNotificationOnPebble("Next Pass: ", " ISS Risetime: \n" + rt +"\n\n"+ "Duration: \n" + d );
+        Pebble.showSimpleNotificationOnPebble("Next Pass: ", "ISS risetime: \n" + rt +"\n\nDuration: \n" + d );
     },
     function (error) {
         //show error card!
@@ -157,7 +157,7 @@ function getSky(){
   var description = data.weather[0].description;
   var windspeed = data.wind.speed + ' m/s';
   
-        Pebble.showSimpleNotificationOnPebble("Sky conditions: ", "Description: \n"+description+"\n\nSky: \n"+sky+"\n\nWindspeed: \n"+windspeed);
+        Pebble.showSimpleNotificationOnPebble("Sky conditions: ", "Description: \n"+description+"\n\nSky: \n"+sky+"\n\nWind speed: \n"+windspeed);
 },
   function(error) {
     // Failure!
@@ -177,7 +177,7 @@ function getGeo(){
   console.log('Successfully fetched weather data!');
 
   // Extract data
-  var city = data.name + " city";
+  var city = data.name;
   var country = data.sys.country;
         function timeConverter(UNIX_timestamp){
              var a = new Date(UNIX_timestamp*1000);
@@ -186,7 +186,7 @@ function getGeo(){
          }  
   var sunrise = timeConverter(data.sys.sunrise);
   var sunset = timeConverter(data.sys.sunset);
-        Pebble.showSimpleNotificationOnPebble("Geolocation: ", city + "\n\nCountry: \n" + country + "\n\nSunrise time: \n"+sunrise+ "\n\nSunset time: \n"+sunset);
+        Pebble.showSimpleNotificationOnPebble("Geolocation: ", "City: \n" + city + "\n\nCountry: \n" + country + "\n\nSunrise time: \n"+sunrise+ "\n\nSunset time: \n"+sunset);
 },
   function(error) {
     // Failure!

@@ -3,8 +3,8 @@
     "capabilities": [
         "location"
     ],
-    "companyName": "Nos-otros",
-    "longName": "PROJECT_SPACE",
+    "companyName": "Los \u00f1ames",
+    "longName": "Space Pebble: What's up?",
     "projectType": "pebblejs",
     "resources": {
         "media": [
@@ -29,25 +29,25 @@
                 "type": "font"
             },
             {
-                "file": "images/logo.png",
-                "menuIcon": true,
-                "name": "IMAGES_LOGO_PNG",
+                "file": "images/promo.png",
+                "name": "IMAGES_PROMO_PNG",
                 "type": "png"
             },
             {
-                "file": "images/promo.png",
-                "name": "IMAGES_PROMO_PNG",
+                "file": "images/logo.png",
+                "menuIcon": true,
+                "name": "IMAGES_LOGO_PNG",
                 "type": "png"
             }
         ]
     },
     "sdkVersion": "3",
-    "shortName": "PROJECT_SPACE",
+    "shortName": "Space Pebble",
     "uuid": "bbc81860-f428-4b63-a073-5c24bc12aaf6",
     "versionCode": 1,
     "versionLabel": "1.0",
     "watchapp": {
-        "hiddenApp": false,
+        "hiddenApp": true,
         "watchface": false
     }
 }
