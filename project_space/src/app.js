@@ -1,8 +1,10 @@
-/**
- * This is the source code for "Pebble we have a problem"
- * which intends to call some of NASA and ISS API's
+/*
+ * This is the source code for "Pebble we have a problem"/What's UP?
  *
  *	TEAM: 
+ * 	Israel Dilan Pantojas
+ * 	Alejandro Salvador Vega Nogales
+ * 	
  * 
  */
 
@@ -23,9 +25,9 @@ var myalt;
 
 /* Next */
 
-function isLatPos(x) {if (x>0) return x + " N"; else if(x < 0) return Math.abs(x) + " S";}
+function isLatPos(x) {if (x>0) return x + " N"; else if(x < 0) return Math.abs(x) + " S";} //adds cardinal point to the latitude value and gets its absolute value if necessary 
 
-function isLonPos(y) {if (y>0) return y + " E"; else if(y < 0) return Math.abs(y) + " W";}
+function isLonPos(y) {if (y>0) return y + " E"; else if(y < 0) return Math.abs(y) + " W";}//adds cardinal point to the longitude value and gets its absolute value if necessary
                       
 // API functions \\
 // Getting ISS Location
@@ -57,7 +59,7 @@ function getISSLocation ()
     });
 }
 
-// Function to return 
+// return the current crew aboard the ISS
 function getISSCrew (){
     var URL = 'http://api.open-notify.org/astros.json';
 
@@ -89,7 +91,7 @@ function getISSCrew (){
     }
 }
 
-// Getting ISS Location
+// Gets the time of the next ISS pass over the user's location
 function getNextPass ()
 {
     var URL = 'http://api.open-notify.org/iss-pass.json?lat='+ mylat + '&lon=' + mylon + '&alt=' + myalt + '&n=1';
@@ -118,8 +120,11 @@ function getNextPass ()
     });
 }
 
-/* Wheather */
+//end ISS API functions
 
+// <<<< Begin openweathermap API functions>>>>> 
+
+//provides ambient weather info to the user
 function getAmb(){
   var URL = 'http://api.openweathermap.org/data/2.5/weather?lat='+mylat+'&lon='+ mylon+ '&cnt=1';
     ajax({
@@ -142,6 +147,7 @@ function getAmb(){
 );
 }
 
+//provides weather info about the sky to the user 
 function getSky(){
   var URL = 'http://api.openweathermap.org/data/2.5/weather?lat='+mylat+'&lon='+ mylon+ '&cnt=1';
     ajax({
@@ -166,6 +172,8 @@ function getSky(){
 );
 }
 
+
+//provides info about the user's current location
 function getGeo(){
   var URL = 'http://api.openweathermap.org/data/2.5/weather?lat='+mylat+'&lon='+ mylon+ '&cnt=1';
     ajax({
@@ -195,7 +203,9 @@ function getGeo(){
 );
 }
 
-/* Predict SKY*/
+//end openweathermap API functions
+
+// <<<<<Begin Predict the Sky NASA API functions (still a WPI from NASA so we hope to implement as soon as they are finished) >>>>>
 
 
 function Predict ()
@@ -232,12 +242,12 @@ function Predict ()
     });
 }
 
+//end Predict the Sky NASA API functions
 
 
+// <<<<Begin Mozilla Geolocater API functions>>>>
 
-/* GEOLOCATION */
-
-// GET Position
+// GET geographic coordinates
 var locationSuccess = function (pos) {
 var coordinates = pos.coords;
     console.log('MY location= lat:' + coordinates.latitude + ', long: ' + coordinates.longitude + ', alt: ' + coordinates.altitude);
@@ -257,7 +267,12 @@ navigator.geolocation.getCurrentPosition(locationSuccess, locationError, {maximu
 console.log('No geolocation');
 }
     
+//end Mozilla Geolocater API functions
 
+
+/*
+
+I assume this is testing code you were using for the hackathon Dilan. eliminate it?
 
 
 // Local storage
@@ -277,21 +292,9 @@ console.log('Pebble Watch Token: ' + Pebble.getWatchToken());
 
 // END APIS \\
 
+*/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//<<< UI functions: >>>>
 
 
 
