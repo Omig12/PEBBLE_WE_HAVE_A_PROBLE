@@ -11,17 +11,17 @@
             {
                 "file": "images/menu_icon.png",
                 "name": "IMAGE_MENU_ICON",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/logo_splash.png",
                 "name": "IMAGE_LOGO_SPLASH",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "images/tile_splash.png",
                 "name": "IMAGE_TILE_SPLASH",
-                "type": "png"
+                "type": "bitmap"
             },
             {
                 "file": "fonts/UbuntuMono-Regular.ttf",
@@ -29,25 +29,29 @@
                 "type": "font"
             },
             {
-                "file": "images/promo.png",
-                "name": "IMAGES_PROMO_PNG",
-                "type": "png"
-            },
-            {
                 "file": "images/logo.png",
                 "menuIcon": true,
                 "name": "IMAGES_LOGO_PNG",
-                "type": "png"
+                "type": "bitmap"
+            },
+            {
+                "file": "images/promo.png",
+                "name": "IMAGES_PROMO_PNG",
+                "type": "bitmap"
             }
         ]
     },
     "sdkVersion": "3",
     "shortName": "Space Pebble",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
     "uuid": "bbc81860-f428-4b63-a073-5c24bc12aaf6",
     "versionCode": 1,
     "versionLabel": "1.0",
     "watchapp": {
-        "hiddenApp": true,
+        "hiddenApp": false,
         "watchface": false
     }
 }

@@ -1,11 +1,9 @@
-/*
- * This is the source code for "Pebble we have a problem"/What's UP?
+/**
+ * This is the source code for "Pebble we have a problem"
+ * which intends to call some of NASA and ISS API's
  *
  *	TEAM: 
- * 	Israel Dilan Pantojas
- * 	Alejandro Salvador Vega Nogales
- * 	
- * 
+ *     Los ñames
  */
 
 var UI = require('ui');
@@ -18,17 +16,16 @@ var num;
 var mylat;
 var mylon;
 var myalt;
-
+var type = 'png';
+var Mapa = 'https://maps.googleapis.com/maps/api/staticmap?maptype='+type+'&center='+mylat+','+mylon+'&zoom=5&style=element:labels|visibility:on&style=element:geometry.stroke|visibility:off&style=feature:landscape|element:geometry|saturation:-100&style=feature:water|saturation:-100|invert_lightness:true&size=144x168';
 // End vars \\
 
 
-
 /* Next */
+function isLatPos(x) {if (x>0) return x + " N"; else if(x < 0) return Math.abs(x) + " S";}
+function isLonPos(y) {if (y>0) return y + " E"; else if(y < 0) return Math.abs(y) + " W";}
 
-function isLatPos(x) {if (x>0) return x + " N"; else if(x < 0) return Math.abs(x) + " S";} //adds cardinal point to the latitude value and gets its absolute value if necessary 
 
-function isLonPos(y) {if (y>0) return y + " E"; else if(y < 0) return Math.abs(y) + " W";}//adds cardinal point to the longitude value and gets its absolute value if necessary
-                      
 // API functions \\
 // Getting ISS Location
 function getISSLocation ()
@@ -59,7 +56,7 @@ function getISSLocation ()
     });
 }
 
-// return the current crew aboard the ISS
+// Function to return 
 function getISSCrew (){
     var URL = 'http://api.open-notify.org/astros.json';
 
@@ -91,7 +88,7 @@ function getISSCrew (){
     }
 }
 
-// Gets the time of the next ISS pass over the user's location
+// Getting ISS Location
 function getNextPass ()
 {
     var URL = 'http://api.open-notify.org/iss-pass.json?lat='+ mylat + '&lon=' + mylon + '&alt=' + myalt + '&n=1';
@@ -120,13 +117,13 @@ function getNextPass ()
     });
 }
 
-//end ISS API functions
 
-// <<<< Begin openweathermap API functions>>>>> 
 
-//provides ambient weather info to the user
+/* Wheather */
+
+var OWAPIKEY = "&APPID=";
 function getAmb(){
-  var URL = 'http://api.openweathermap.org/data/2.5/weather?lat='+mylat+'&lon='+ mylon+ '&cnt=1';
+    var URL = 'http://api.openweathermap.org/data/2.5/weather?lat='+mylat+'&lon='+ mylon+ '&cnt=1&units=imperial'+OWAPIKEY;
     ajax({
         url: URL,
         type: 'json'
@@ -134,22 +131,23 @@ function getAmb(){
     function(data) {
   // Success!
   console.log('Successfully fetched weather data!');
+  console.log('http://api.openweathermap.org/data/2.5/weather?lat='+mylat+'&lon='+ mylon+ '&cnt=1&units=imperial'+OWAPIKEY);
   // Extract data
-  var temperature = Math.round(data.main.temp * 9/5 - 459.67) + ' F';
+  var temperature = Math.round(data.main.temp) + ' F';
   var pressure = data.main.pressure + " hPa";
   var humidity = data.main.humidity + "%";     
         Pebble.showSimpleNotificationOnPebble("Ambient: ", "Temperature: \n" + temperature + "\n\nPressure: \n" + pressure + "\n\nHumidity: \n" + humidity);
 },
   function(error) {
     // Failure!
+    console.log('http://api.openweathermap.org/data/2.5/weather?lat='+mylat+'&lon='+ mylon+ '&cnt=1&units=imperial'+OWAPIKEY);  
     console.log('Failed fetching weather data: ' + error);
   }
 );
 }
 
-//provides weather info about the sky to the user 
 function getSky(){
-  var URL = 'http://api.openweathermap.org/data/2.5/weather?lat='+mylat+'&lon='+ mylon+ '&cnt=1';
+  var URL = 'http://api.openweathermap.org/data/2.5/weather?lat='+mylat+'&lon='+ mylon+ '&cnt=1'+OWAPIKEY;
     ajax({
         url: URL,
         type: 'json'
@@ -172,10 +170,8 @@ function getSky(){
 );
 }
 
-
-//provides info about the user's current location
 function getGeo(){
-  var URL = 'http://api.openweathermap.org/data/2.5/weather?lat='+mylat+'&lon='+ mylon+ '&cnt=1';
+  var URL = 'http://api.openweathermap.org/data/2.5/weather?lat='+mylat+'&lon='+ mylon+ '&cnt=1'+OWAPIKEY;
     ajax({
         url: URL,
         type: 'json'
@@ -203,36 +199,33 @@ function getGeo(){
 );
 }
 
-//end openweathermap API functions
 
-// <<<<<Begin Predict the Sky NASA API functions (still a WPI from NASA so we hope to implement as soon as they are finished) >>>>>
 
+/* Predict SKY*/
+var start_date = "2016-02-06";
+var end_date = "2016-02-13";
+var API_key= "DEMO_KEY"; 
 
 function Predict ()
 {
-    var URL = 'http://api.predictthesky.org';
-
+    // Need to find out how to get time parameter from pebble. 'Clock' is a likely candidate. And get a legit app key.
+    var URL = 'https://api.nasa.gov/neo/rest/v1/feed?start_date='+start_date+'&end_date='+end_date+ '&api_key='+ API_key; 
+    
     // Make the request
     ajax({
         url: URL,
         type: 'application/json'
     },
 
-         
+    //https://api.nasa.gov/neo/rest/v1/feed?start_date=2016-02-06&end_date=2016-02-13&api_key=DEMO_KEY     
     function (data) {
         // Success!
-        console.log('Successfully fetched fireball data!');
-        function timeConverter(UNIX_timestamp){
-             var a = new Date(UNIX_timestamp*1000);
-             var time = a.toLocaleString();
-             return time;
-         }
+        console.log('Successfully fetched NEObject data!');
         
-        var rt = timeConverter(data.response[0].risetime);
-        var d = data.response[0].duration;
+        var many = data.element_count;
 
-        console.log("rt " + rt + " d " + d);
-        Pebble.showSimpleNotificationOnPebble("Next Pass: ", "Risetime: \n" + rt +"\n\n"+ "Duration: \n" + d );
+        console.log("how many?" + many);
+        Pebble.showSimpleNotificationOnPebble("NEO:", "How many NEOs?: \n" + many +"\n\n");
     },
 
     function (error) {
@@ -242,12 +235,12 @@ function Predict ()
     });
 }
 
-//end Predict the Sky NASA API functions
 
 
-// <<<<Begin Mozilla Geolocater API functions>>>>
 
-// GET geographic coordinates
+/* GEOLOCATION */
+
+// GET Position
 var locationSuccess = function (pos) {
 var coordinates = pos.coords;
     console.log('MY location= lat:' + coordinates.latitude + ', long: ' + coordinates.longitude + ', alt: ' + coordinates.altitude);
@@ -266,14 +259,30 @@ navigator.geolocation.getCurrentPosition(locationSuccess, locationError, {maximu
 } else {
 console.log('No geolocation');
 }
-    
-//end Mozilla Geolocater API functions
 
 
+// GOogle maps api
 /*
-
-I assume this is testing code you were using for the hackathon Dilan. eliminate it?
-
+function getMap() {
+   
+    console.log(Pebble.openURL('https://maps.googleapis.com/maps/api/staticmap?maptype='+type+'&center='+mylat+','+mylon+'&zoom=5&style=element:labels|visibility:on&style=element:geometry.stroke|visibility:off&style=feature:landscape|element:geometry|saturation:-100&style=feature:water|saturation:-100|invert_lightness:true&size=144x160'));
+                }
+  /*      
+ajax(
+    {
+        url: 'https://maps.googleapis.com/maps/api/staticmap?maptype="+type+"&center="+mylat+","+mylon+"&zoom=5&style=element:labels|visibility:on&style=element:geometry.stroke|visibility:off&style=feature:landscape|element:geometry|saturation:-100&style=feature:water|saturation:-100|invert_lightness:true&size=144x160',
+        type: 'json'
+    },
+        function(data) {
+        console.log('Quote of the day is: ' + data.contents.quote);
+        console.log('mapa' + data);
+    Mapa = data;
+    },
+        function(error, status, request) {
+            console.log('mapa' + request);
+            console.log('The ajax request failed: ' + error);
+    }
+);} */
 
 // Local storage
 
@@ -292,9 +301,9 @@ console.log('Pebble Watch Token: ' + Pebble.getWatchToken());
 
 // END APIS \\
 
-*/
 
-//<<< UI functions: >>>>
+
+
 
 
 
@@ -310,10 +319,19 @@ var main = new UI.Card({
 var banner = new UI.Window({ fullscreen: true });
 var img = new UI.Image({
   position: new Vector2(0, 0),
-  size: new Vector2(144, 168),
+  size: new Vector2(140, 164), // 144 x 168
   image: 'images/promo.png'
 });
 banner.add(img);
+
+// Map image holder
+var Gmap = new UI.Window({ fullscreen: true });
+var imagen = new UI.Image({
+  position: new Vector2(0, 0),
+  size: new Vector2(144, 168),
+  image: Mapa
+});
+Gmap.add(imagen);
 
 // Main menu
 var sel = [{title: 'ISS'}, {title: 'Weather'}, {title: 'Predict the sky'}, {title: 'My location'}];
@@ -351,9 +369,18 @@ var predict = new UI.Menu({
 	}] 
 });
 
+// My location sub-menu
+var lmi = [{title:'Data'}, {title:'Map'}]; // My Location Menu Items
+var myloc = new UI.Menu ({
+    sections: [{
+        title: 'My location:',
+        items: lmi
+    }]
+});
 
 
 
+console.log(Mapa);
 
 // Function Implementations
 
@@ -376,6 +403,7 @@ main.on('click', 'down', function(e) {
 
 // Main menu selection
 whatsup.on('select', function(event) {
+main.hide();
  var num = sel[event.itemIndex].title;
 	console.log("title " + num);
 	
@@ -386,7 +414,7 @@ if (num === 'ISS') {
   } else if (num === 'Predict the sky') {
 	predict.show();
   } else if (num === 'My location') {
-      Pebble.showSimpleNotificationOnPebble('My coords: ', 'Latitude: \n' + isLatPos(mylat) + '\n\nLongitude: \n' + isLonPos(mylon) + '\n\nAltitude: \n' + myalt + " m");
+    myloc.show();
   }	
  
 });
@@ -418,4 +446,34 @@ weather.on('select', function(event) {
         getGeo();
       } 
     });
+
+// When PREDICT is selected from menu
+predict.on('select', function(event) {
+ var num = pmi[event.itemIndex].title;
+	console.log("title " + num);
+    
+    if (num === 'Satellites') {
+        console.log("Waiting for nasa");
+        Predict();
+      } else if (num === 'Meteors') {
+        console.log("Waiting for nasa");
+      } else if (num === 'Comets') {
+        console.log("Waiting for nasa");
+      } else if (num === 'Planets') {
+        console.log("Waiting for nasa");
+      } 
+    });
+
+// When wheater is selected from menu
+myloc.on('select', function(event) {
+ var num = lmi[event.itemIndex].title;
+	console.log("title " + num);
+    if (num === 'Data') {
+        Pebble.showSimpleNotificationOnPebble('My coords: ', 'Latitude: \n' + isLatPos(mylat) + '\n\nLongitude: \n' + isLonPos(mylon) + '\n\nAltitude: \n' + myalt + " m");
+      } else if (num === 'Map') {
+        ///getMap();
+        Gmap.show();
+      } 
+    });
+
 
